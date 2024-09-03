@@ -1,8 +1,13 @@
 package repository
 
-import m "main.fo/model"
+import (
+	"medsearch/internal/dto"
+	"medsearch/model"
+
+	"gorm.io/gorm"
+)
 
 type UserRepo interface {
-	GetUser()
-	CreateUser() m.User
+	Create(req dto.UserRequest, db *gorm.DB) (model.User, error)
+	Get(id int, db *gorm.DB) (model.User, error)
 }
