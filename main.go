@@ -18,7 +18,7 @@ func main() {
 	r.GET("/users/:id", user.Get)
 	r.POST("/users", user.Create)
 	// bbbbbbbbbbbbbbbbbbbbbbbb
-	// r.PUT("/users/:id", updateUserHandler)
+// r.PUT("/users/:id", updateUserHandler)
 	// r.DELETE("/users/:id", deleteUserHandler)
 
 	// Start the server
