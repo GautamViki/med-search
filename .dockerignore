@@ -1,0 +1,6 @@
+# Ignore the binary
+main
+
+# Ignore anything that isn't needed
+*.log
+*.tmp
