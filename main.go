@@ -1,26 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"medsearch/config"
 	"medsearch/handler"
+	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
 	db := config.ConnectDB()
 	config.UpdateDB(db)
-	// Initialize Gin router
-	r := gin.Default()
+	r := chi.NewRouter()
 	user := handler.NewUserHandler()
-
-	// Define routes
-	r.GET("/users/:id", user.Get)
-	r.POST("/users", user.Create)
-	// bbbbbbbbbbbbbbbbbbbbbbbb
-	// r.PUT("/users/:id", updateUserHandler)
-	// r.DELETE("/users/:id", deleteUserHandler)
-
-	// Start the server
-	r.Run(":3007")
+	r.Group(func(router chi.Router) {
+		router.Get("/users/{id}", user.Get)
+		router.Post("/users", user.Create)
+	})
+	fmt.Println("Server started at port:3007")
+	http.ListenAndServe(":3007", r)
 }
