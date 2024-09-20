@@ -5,6 +5,7 @@ import (
 	"medsearch/config"
 	"medsearch/handler"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -18,6 +19,7 @@ func main() {
 		router.Get("/users/{id}", user.Get)
 		router.Post("/users", user.Create)
 	})
-	fmt.Println("Server started at port:3007")
-	http.ListenAndServe(":3007", r)
+	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	fmt.Println("Server started at port", port)
+	http.ListenAndServe(port, r)
 }
