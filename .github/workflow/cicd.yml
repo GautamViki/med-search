@@ -1,0 +1,32 @@
+name: Deploy medsearch
+
+on:
+  push:
+    branches:
+      -main
+
+jobs:
+  build:
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: action/checkout@v4
+      - name: create .env file
+        run: echo "PORT=${{ secrets.PORT }}" >> .env
+      - name: login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t gautamviki/medsearch-app .
+      - name: Push image to docker hub
+        run: docker push gautamviki/medsearch-app:v1
+
+  deploy:
+    need: build
+    runs-on: self-hosted
+    steps: 
+      - name: pull the docker image
+        run: docker pull gautamviki/medsearch-app:v1
+      - name: delete the old container
+        run: docker rm -f go-app-container
+      - name: run docker container
+        run: docker run -d -p 3009:3009 --name go-app-container gautamviki/medsearch-app

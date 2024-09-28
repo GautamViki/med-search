@@ -1,26 +1,17 @@
-# Specify the base image for the Go app
-FROM golang
+FROM golang:1.22.2-alpine
 
-# Specify that we now need to execute any commands in this directory
-WORKDIR /medsearch
+WORKDIR /app
 
-# Copy everything from this project into the filesystem of the container
+COPY go.mod go.sum ./
+
+RUN go mod tidy
+
 COPY . .
 
-# Copy the wait-for-it script into the container
-COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN go build -o main ./main.go
 
-# Make sure the script is executable
-RUN chmod +x /usr/local/bin/wait-for-it.sh
+RUN chmod +x main
 
-# Install the MySQL client
-RUN apt-get update && apt-get install -y default-mysql-client
+EXPOSE 3009
 
-# Obtain the package needed to run MySQL commands. Alternatively, use Go Modules.
-RUN go get -u github.com/go-sql-driver/mysql
-
-# Compile the binary exe for our app
-RUN go build -o main .
-
-# Start the application
-CMD ["./main"]
+CMD [ "./main" ]
